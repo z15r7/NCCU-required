@@ -1,0 +1,1124 @@
+[
+    {
+        "option": "major",
+        "type": "MAJOR",
+        "departmentLabel": "中國文學系",
+        "groupLabel": "",
+        "categories": [
+            {
+                "type": "GENERAL_EDUCATION",
+                "status": "COMPLETED",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 30,
+                        "min": 28,
+                        "max": 28,
+                        "remain": 0,
+                        "quota": 0,
+                        "waived": 0
+                    }
+                ],
+                "records": [],
+                "placeholders": [],
+                "checkpoints": [
+                    {
+                        "code": "COMMON__共同必修____rule-GE-core",
+                        "label": "核心通識",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "COURSE",
+                                "actual": 5,
+                                "min": 2,
+                                "max": 2,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "disciplines": [
+                            "HUMANITIES",
+                            "SOCIAL",
+                            "NATURAL"
+                        ],
+                        "messages": []
+                    }
+                ],
+                "requirements": [
+                    {
+                        "code": "COMMON__共同必修____rule-GE-chinese",
+                        "label": "中文通識（3~6）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 3,
+                                "min": 3,
+                                "max": 6,
+                                "remain": 0,
+                                "quota": 3,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "國文",
+                                "scoreStatus": "NORMAL",
+                                "score": 77.49,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-foreign-lang",
+                        "label": "外文通識（6）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 6,
+                                "min": 6,
+                                "max": 6,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "大學英文（二）",
+                                "scoreStatus": "NORMAL",
+                                "score": 86.04,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "大學英文（一）",
+                                "scoreStatus": "NORMAL",
+                                "score": 86.62,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-humanities",
+                        "label": "人文通識（3~7）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 6,
+                                "min": 3,
+                                "max": 7,
+                                "remain": 0,
+                                "quota": 1,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "近代臺灣歷史與人物",
+                                "scoreStatus": "NORMAL",
+                                "score": 80.84,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": "CORE",
+                                "note": null
+                            },
+                            {
+                                "name": "近現代臺灣的政治符號與國家認同",
+                                "scoreStatus": "NORMAL",
+                                "score": 99.08,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-social",
+                        "label": "社會通識（3~7）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 9,
+                                "min": 3,
+                                "max": 7,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "法學素養",
+                                "scoreStatus": "NORMAL",
+                                "score": 78.2,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": "CORE",
+                                "note": null
+                            },
+                            {
+                                "name": "臺灣政治",
+                                "scoreStatus": "NORMAL",
+                                "score": 64.58,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": "CORE",
+                                "note": null
+                            },
+                            {
+                                "name": "中國大陸概論",
+                                "scoreStatus": "NORMAL",
+                                "score": 64.88,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": "CORE",
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-natural",
+                        "label": "自然通識（3~7）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 3,
+                                "min": 3,
+                                "max": 7,
+                                "remain": 0,
+                                "quota": 4,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "生活中的生命科學",
+                                "scoreStatus": "NORMAL",
+                                "score": 77.86,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 2,
+                                "badge": "CORE",
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-information",
+                        "label": "資訊通識（2~3）",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 3,
+                                "min": 2,
+                                "max": 3,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "生活中的數學、邏輯與運算思維",
+                                "scoreStatus": "NORMAL",
+                                "score": 69.39,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "COMMON__共同必修____rule-GE-college",
+                        "label": "書院通識",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 0,
+                                "min": 0,
+                                "max": 3,
+                                "remain": 0,
+                                "quota": 3,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [],
+                        "placeholders": [],
+                        "messages": []
+                    }
+                ]
+            },
+            {
+                "type": "PHYSICAL_EDUCATION",
+                "status": "INCOMPLETE",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 3,
+                        "min": 4,
+                        "max": 4,
+                        "remain": 1,
+                        "quota": 1,
+                        "waived": 0
+                    }
+                ],
+                "records": [
+                    {
+                        "name": "體育[男女合班]—桌球高級",
+                        "scoreStatus": "NORMAL",
+                        "score": 61.61,
+                        "credit": 1,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": null,
+                        "note": null
+                    },
+                    {
+                        "name": "體育[男女合班]—桌球中級",
+                        "scoreStatus": "NORMAL",
+                        "score": 94.14,
+                        "credit": 1,
+                        "academicYear": 110,
+                        "semester": 2,
+                        "badge": null,
+                        "note": null
+                    },
+                    {
+                        "name": "體育[男女合班]—桌球初級",
+                        "scoreStatus": "NORMAL",
+                        "score": 83.69,
+                        "credit": 1,
+                        "academicYear": 110,
+                        "semester": 1,
+                        "badge": null,
+                        "note": null
+                    }
+                ],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": []
+            },
+            {
+                "type": "REQUIRED",
+                "status": "INCOMPLETE",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 21,
+                        "min": 36,
+                        "max": 36,
+                        "remain": 15,
+                        "quota": 15,
+                        "waived": 0
+                    }
+                ],
+                "records": [],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": [
+                    {
+                        "code": "required-MAJOR-freshman",
+                        "label": "大一",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 6,
+                                "min": 6,
+                                "max": 6,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "詩選",
+                                "scoreStatus": "NORMAL",
+                                "score": 83.52,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "國學導讀",
+                                "scoreStatus": "NORMAL",
+                                "score": 91.69,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "required-MAJOR-sophomore",
+                        "label": "大二",
+                        "status": "INCOMPLETE",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 9,
+                                "min": 15,
+                                "max": 15,
+                                "remain": 6,
+                                "quota": 6,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "中國文學史",
+                                "scoreStatus": "NORMAL",
+                                "score": 81.85,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "文字學",
+                                "scoreStatus": "NORMAL",
+                                "score": 76.99,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "中國文學史",
+                                "scoreStatus": "NORMAL",
+                                "score": 99.01,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [
+                            {
+                                "name": "詞選",
+                                "scoreStatus": "MISSING"
+                            },
+                            {
+                                "name": "歷代文選及習作",
+                                "scoreStatus": "MISSING"
+                            }
+                        ],
+                        "messages": []
+                    },
+                    {
+                        "code": "required-MAJOR-junior",
+                        "label": "大三",
+                        "status": "INCOMPLETE",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 6,
+                                "min": 12,
+                                "max": 12,
+                                "remain": 6,
+                                "quota": 6,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "中國思想史",
+                                "scoreStatus": "NORMAL",
+                                "score": 77.25,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "中國思想史",
+                                "scoreStatus": "NORMAL",
+                                "score": 73.48,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [
+                            {
+                                "name": "聲韻學",
+                                "scoreStatus": "MISSING"
+                            },
+                            {
+                                "name": "曲選",
+                                "scoreStatus": "MISSING"
+                            }
+                        ],
+                        "messages": []
+                    },
+                    {
+                        "code": "required-MAJOR-senior",
+                        "label": "大四",
+                        "status": "INCOMPLETE",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 0,
+                                "min": 3,
+                                "max": 3,
+                                "remain": 3,
+                                "quota": 3,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [],
+                        "placeholders": [
+                            {
+                                "name": "訓詁學",
+                                "scoreStatus": "MISSING"
+                            }
+                        ],
+                        "messages": []
+                    }
+                ]
+            },
+            {
+                "type": "PARTIALLY_REQUIRED",
+                "status": "COMPLETED",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 21,
+                        "min": 15,
+                        "max": 15,
+                        "remain": 0,
+                        "quota": 0,
+                        "waived": 0
+                    }
+                ],
+                "records": [],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": [
+                    {
+                        "code": "MAJOR__中國文學系____rule-群A",
+                        "label": "群A",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 9,
+                                "min": 6,
+                                "max": 6,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "莊子",
+                                "scoreStatus": "NORMAL",
+                                "score": 76.34,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "魏晉玄學",
+                                "scoreStatus": "NORMAL",
+                                "score": 70.03,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "孟子",
+                                "scoreStatus": "NORMAL",
+                                "score": 75.8,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "MAJOR__中國文學系____rule-群B",
+                        "label": "群B",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 12,
+                                "min": 9,
+                                "max": 9,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "古典小說選讀",
+                                "scoreStatus": "NORMAL",
+                                "score": 67.42,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "文學概論",
+                                "scoreStatus": "NORMAL",
+                                "score": 77.87,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "語言學概論",
+                                "scoreStatus": "NORMAL",
+                                "score": 99.55,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "紅樓夢",
+                                "scoreStatus": "NORMAL",
+                                "score": 89.56,
+                                "credit": 3,
+                                "academicYear": 110,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    }
+                ]
+            },
+            {
+                "type": "ELECTIVE",
+                "status": "INCOMPLETE",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 70,
+                        "min": 77,
+                        "max": 77,
+                        "remain": 7,
+                        "quota": 7,
+                        "waived": 0
+                    }
+                ],
+                "records": [
+                    {
+                        "name": "比較政府與政治",
+                        "scoreStatus": "NORMAL",
+                        "score": 75.29,
+                        "credit": 3,
+                        "academicYear": 114,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "西洋政治思想典籍導讀",
+                        "scoreStatus": "NORMAL",
+                        "score": 93.19,
+                        "credit": 3,
+                        "academicYear": 114,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "政治學",
+                        "scoreStatus": "NORMAL",
+                        "score": 70.27,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "國會與立法行為",
+                        "scoreStatus": "NORMAL",
+                        "score": 77.61,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "行政法",
+                        "scoreStatus": "NORMAL",
+                        "score": 94.47,
+                        "credit": 2,
+                        "academicYear": 113,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "政治學",
+                        "scoreStatus": "NORMAL",
+                        "score": 88.13,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "行政法",
+                        "scoreStatus": "NORMAL",
+                        "score": 89.91,
+                        "credit": 2,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "第三部門",
+                        "scoreStatus": "NORMAL",
+                        "score": 81.25,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "公務倫理",
+                        "scoreStatus": "NORMAL",
+                        "score": 90.19,
+                        "credit": 2,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "政黨政治",
+                        "scoreStatus": "NORMAL",
+                        "score": 63.03,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "政策分析",
+                        "scoreStatus": "NORMAL",
+                        "score": 75.87,
+                        "credit": 2,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "全球化與公共事務",
+                        "scoreStatus": "NORMAL",
+                        "score": 94.05,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "比較與發展行政",
+                        "scoreStatus": "NORMAL",
+                        "score": 62.56,
+                        "credit": 2,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "公部門人力資源管理",
+                        "scoreStatus": "NORMAL",
+                        "score": 89.29,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "公共政策",
+                        "scoreStatus": "NORMAL",
+                        "score": 86.46,
+                        "credit": 2,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "政府預算與財政",
+                        "scoreStatus": "NORMAL",
+                        "score": 64.42,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "研究設計與方法",
+                        "scoreStatus": "NORMAL",
+                        "score": 96.94,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "組織理論與管理",
+                        "scoreStatus": "NORMAL",
+                        "score": 73.91,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "社會學",
+                        "scoreStatus": "NORMAL",
+                        "score": 65.11,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "行政學",
+                        "scoreStatus": "NORMAL",
+                        "score": 82.69,
+                        "credit": 2,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "科技與政府",
+                        "scoreStatus": "NORMAL",
+                        "score": 88.64,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "經濟學",
+                        "scoreStatus": "NORMAL",
+                        "score": 85.74,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "中華民國憲法及政府",
+                        "scoreStatus": "NORMAL",
+                        "score": 89.71,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "西洋政治思想史",
+                        "scoreStatus": "NORMAL",
+                        "score": 62.94,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "行政學",
+                        "scoreStatus": "NORMAL",
+                        "score": 84.67,
+                        "credit": 2,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    },
+                    {
+                        "name": "行政統計學",
+                        "scoreStatus": "NORMAL",
+                        "score": 89.73,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "EXTERNAL_DEPT",
+                        "note": null
+                    }
+                ],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": []
+            },
+            {
+                "type": "NON_CREDIT",
+                "status": "INCOMPLETE",
+                "stats": [
+                    {
+                        "metric": "COURSE",
+                        "actual": 16,
+                        "min": 0,
+                        "max": 0,
+                        "remain": 0,
+                        "quota": 0,
+                        "waived": 0
+                    }
+                ],
+                "records": [
+                    {
+                        "name": "中華民國憲法",
+                        "scoreStatus": "NORMAL",
+                        "score": 17.35,
+                        "credit": 2,
+                        "academicYear": 113,
+                        "semester": 2,
+                        "badge": "REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "藥你康健、遠離毒惑（禍）",
+                        "scoreStatus": "WITHDRAWN",
+                        "score": null,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "GE_SCIENCE",
+                        "note": "SCORE_WITHDRAWN"
+                    },
+                    {
+                        "name": "中國政治思想典籍導讀",
+                        "scoreStatus": "NORMAL",
+                        "score": 53.77,
+                        "credit": 3,
+                        "academicYear": 113,
+                        "semester": 1,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "民意與調查",
+                        "scoreStatus": "NORMAL",
+                        "score": 44.6,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "第三部門",
+                        "scoreStatus": "NORMAL",
+                        "score": 21.21,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 2,
+                        "badge": "REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "生活中的律動",
+                        "scoreStatus": "NORMAL",
+                        "score": 53.9,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "中國政治思想典籍導讀",
+                        "scoreStatus": "NORMAL",
+                        "score": 30.91,
+                        "credit": 3,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "公務倫理",
+                        "scoreStatus": "NORMAL",
+                        "score": 50.5,
+                        "credit": 2,
+                        "academicYear": 112,
+                        "semester": 1,
+                        "badge": "REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "經濟學",
+                        "scoreStatus": "NORMAL",
+                        "score": 48.54,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "社會學動動腦",
+                        "scoreStatus": "NORMAL",
+                        "score": 42.91,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "國語語音學",
+                        "scoreStatus": "NORMAL",
+                        "score": 5.18,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "ELECTIVE",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "公共政策",
+                        "scoreStatus": "NORMAL",
+                        "score": 28.62,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "兩岸關係概論",
+                        "scoreStatus": "NORMAL",
+                        "score": 40.59,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 2,
+                        "badge": "PARTIALLY_REQUIRED",
+                        "note": "SCORE_FAILED"
+                    },
+                    {
+                        "name": "政治學",
+                        "scoreStatus": "WITHDRAWN",
+                        "score": null,
+                        "credit": 3,
+                        "academicYear": 111,
+                        "semester": 1,
+                        "badge": "REQUIRED",
+                        "note": "SCORE_WITHDRAWN"
+                    },
+                    {
+                        "name": "士人、社會與國家",
+                        "scoreStatus": "WITHDRAWN",
+                        "score": null,
+                        "credit": 3,
+                        "academicYear": 110,
+                        "semester": 2,
+                        "badge": "GE_HUMANITIES",
+                        "note": "SCORE_WITHDRAWN"
+                    },
+                    {
+                        "name": "漢語語法",
+                        "scoreStatus": "WITHDRAWN",
+                        "score": null,
+                        "credit": 3,
+                        "academicYear": 110,
+                        "semester": 1,
+                        "badge": "ELECTIVE",
+                        "note": "SCORE_WITHDRAWN"
+                    }
+                ],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": []
+            }
+        ]
+    }
+]

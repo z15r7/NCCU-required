@@ -1,0 +1,23 @@
+[
+    {
+        "option": "minor-1",
+        "type": "MINOR",
+        "departmentLabel": "政治系",
+        "groupLabel": "",
+        "isAvailable": false
+    },
+    {
+        "option": "major-as-minor",
+        "type": "MINOR",
+        "departmentLabel": "中國文學系",
+        "groupLabel": "",
+        "isAvailable": false
+    },
+    {
+        "option": "double-as-minor",
+        "type": "MINOR",
+        "departmentLabel": "公行系",
+        "groupLabel": "",
+        "isAvailable": false
+    }
+]

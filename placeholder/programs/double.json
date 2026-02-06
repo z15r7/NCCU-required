@@ -1,0 +1,295 @@
+[
+    {
+        "option": "double",
+        "type": "DOUBLE",
+        "departmentLabel": "公行系",
+        "groupLabel": "",
+        "categories": [
+            {
+                "type": "REQUIRED",
+                "status": "COMPLETED",
+                "stats": [
+                    {
+                        "metric": "CREDIT",
+                        "actual": 52,
+                        "min": 51,
+                        "max": 51,
+                        "remain": 0,
+                        "quota": 0,
+                        "waived": 0
+                    }
+                ],
+                "records": [],
+                "placeholders": [],
+                "checkpoints": [],
+                "requirements": [
+                    {
+                        "code": "required-DOUBLE-freshman",
+                        "label": "大一",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 22,
+                                "min": 21,
+                                "max": 21,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "政治學",
+                                "scoreStatus": "NORMAL",
+                                "score": 70.27,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "政治學",
+                                "scoreStatus": "NORMAL",
+                                "score": 88.13,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "社會學",
+                                "scoreStatus": "NORMAL",
+                                "score": 65.11,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "行政學",
+                                "scoreStatus": "NORMAL",
+                                "score": 82.69,
+                                "credit": 2,
+                                "academicYear": 111,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "科技與政府",
+                                "scoreStatus": "NORMAL",
+                                "score": 88.64,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "經濟學",
+                                "scoreStatus": "NORMAL",
+                                "score": 85.74,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "行政學",
+                                "scoreStatus": "NORMAL",
+                                "score": 84.67,
+                                "credit": 2,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "行政統計學",
+                                "scoreStatus": "NORMAL",
+                                "score": 89.73,
+                                "credit": 3,
+                                "academicYear": 111,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [
+                            {
+                                "name": "中華民國憲法",
+                                "scoreStatus": "MISSING"
+                            }
+                        ],
+                        "messages": []
+                    },
+                    {
+                        "code": "required-DOUBLE-sophomore",
+                        "label": "大二",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 18,
+                                "min": 18,
+                                "max": 18,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "政策分析",
+                                "scoreStatus": "NORMAL",
+                                "score": 75.87,
+                                "credit": 2,
+                                "academicYear": 112,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "全球化與公共事務",
+                                "scoreStatus": "NORMAL",
+                                "score": 94.05,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "比較與發展行政",
+                                "scoreStatus": "NORMAL",
+                                "score": 62.56,
+                                "credit": 2,
+                                "academicYear": 112,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "公部門人力資源管理",
+                                "scoreStatus": "NORMAL",
+                                "score": 89.29,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "公共政策",
+                                "scoreStatus": "NORMAL",
+                                "score": 86.46,
+                                "credit": 2,
+                                "academicYear": 112,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "政府預算與財政",
+                                "scoreStatus": "NORMAL",
+                                "score": 64.42,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "研究設計與方法",
+                                "scoreStatus": "NORMAL",
+                                "score": 96.94,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    },
+                    {
+                        "code": "required-DOUBLE-junior",
+                        "label": "大三",
+                        "status": "COMPLETED",
+                        "stats": [
+                            {
+                                "metric": "CREDIT",
+                                "actual": 12,
+                                "min": 12,
+                                "max": 12,
+                                "remain": 0,
+                                "quota": 0,
+                                "waived": 0
+                            }
+                        ],
+                        "records": [
+                            {
+                                "name": "行政法",
+                                "scoreStatus": "NORMAL",
+                                "score": 94.47,
+                                "credit": 2,
+                                "academicYear": 113,
+                                "semester": 2,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "行政法",
+                                "scoreStatus": "NORMAL",
+                                "score": 89.91,
+                                "credit": 2,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "第三部門",
+                                "scoreStatus": "NORMAL",
+                                "score": 81.25,
+                                "credit": 3,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "公務倫理",
+                                "scoreStatus": "NORMAL",
+                                "score": 90.19,
+                                "credit": 2,
+                                "academicYear": 113,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            },
+                            {
+                                "name": "組織理論與管理",
+                                "scoreStatus": "NORMAL",
+                                "score": 73.91,
+                                "credit": 3,
+                                "academicYear": 112,
+                                "semester": 1,
+                                "badge": null,
+                                "note": null
+                            }
+                        ],
+                        "placeholders": [],
+                        "messages": []
+                    }
+                ]
+            }
+        ]
+    }
+]

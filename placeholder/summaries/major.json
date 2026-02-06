@@ -1,0 +1,14 @@
+[
+    {
+        "option": "major",
+        "requiredCredits": 128,
+        "actualCredits": 145,
+        "satisfiedPrograms": [
+            {
+                "type": "MAJOR",
+                "departmentLabel": "中國文學系",
+                "groupLabel": ""
+            }
+        ]
+    }
+]

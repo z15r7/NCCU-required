@@ -1,0 +1,23 @@
+[
+    {
+        "option": "major",
+        "type": "MAJOR",
+        "departmentLabel": "中國文學系",
+        "groupLabel": "",
+        "isAvailable": true
+    },
+    {
+        "option": "double",
+        "type": "DOUBLE",
+        "departmentLabel": "公行系",
+        "groupLabel": "",
+        "isAvailable": true
+    },
+    {
+        "option": "double-as-major",
+        "type": "MAJOR",
+        "departmentLabel": "公行系",
+        "groupLabel": "",
+        "isAvailable": false
+    }
+]
