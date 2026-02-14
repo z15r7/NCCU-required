@@ -11,7 +11,7 @@
         "type": "DOUBLE",
         "departmentLabel": "公行系",
         "groupLabel": "",
-        "isAvailable": true
+        "isAvailable": false
     },
     {
         "option": "double-as-major",
