@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態幾何接縫佈局</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        :root {
+            --bg-base: #f0f0f0;
+            --seam-color: var(--bg-base);
+            --gap-w: 32px;
+        }
+
+        body {
+            background-color: var(--bg-base);
+        }
+
+        .numo-shadow-logic {
+            filter: drop-shadow(3px 3px 4px #00000014) 
+                    drop-shadow(-3px -3px 4px #fcfcfc);
+        }
+
+        .numo-surface {
+            background-color: var(--bg-base);
+            transition: background-color 0.3s;
+        }
+
+        .seam-connector {
+            position: absolute;
+            pointer-events: none;
+            z-index: 20;
+            width: var(--gap-w);
+        }
+
+        svg.seam-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .seam-path {
+            fill: var(--seam-color);
+            stroke: none;
+            clip-path: url(#seam-clip);
+        }
+
+        #clip-left {
+            transition: x(0.3s), width 0.3s;
+        }
+
+        #clip-left {
+            transition: x 0.3s, width 0.3s;
+        }
+
+        .selectable-item .absolute {
+            transition: right 0.3s;
+        }
+        
+        .selectable-item {
+            transition: border-right-color 0.3s, border 0.3s, border-radius 0.3s;
+        }
+
+        .single-col-bg {
+            display: none;
+        }
+
+        body.single-column-mode .numo-surface {
+            background-color: transparent !important;
+        }
+
+        body.single-column-mode .selectable-item {
+            border: none !important;
+            border-radius: 1rem !important;
+        }
+
+        body.single-column-mode .single-col-bg {
+            display: block !important;
+            background-color: var(--bg-base) !important;
+        }
+
+        /* 點選文字與箭頭動畫 */
+        .click-text {
+            transition: transform 0.3s ease-out;
+        }
+        .arrow-icon {
+            display: inline-block;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        #active-card .click-text {
+            transform: translateX(28px);
+        }
+        #active-card .arrow-icon {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+
+        /* 單欄模式箭頭方向調整 */
+        body.single-column-mode .arrow-icon {
+            transform: rotate(90deg) !important;
+            opacity: 1 !important;
+        }
+        body.single-column-mode .selectable-item.is-expanded .arrow-icon {
+            transform: rotate(-90deg) !important;
+        }
+        body.single-column-mode #active-card .click-text {
+            transform: translateX(0);
+        }
+
+        /* 展開內容容器樣式 */
+        .expand-slot {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s;
+        }
+        body.single-column-mode .selectable-item.is-expanded .expand-slot {
+            max-height: 2000px;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="w-full h-screen overflow-hidden flex flex-col">
+        <div class="w-full h-24 px-10 flex items-center flex-shrink-0 relative z-30 bg-[#f0f0f0]">
+            <div class="numo-surface max-w-5xl mx-auto w-full h-14 rounded-2xl flex items-center px-8 justify-between">
+                <span class="text-xl font-bold text-gray-700">不可捲動區域 / 標題欄</span>
+                <button id="layout-toggle" class="numo-shadow-logic numo-surface h-10 px-4 rounded-xl flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <div class="flex gap-1">
+                        <div class="w-2.5 h-4 border-2 border-gray-400 rounded-sm"></div>
+                        <div class="w-2.5 h-4 border-2 border-gray-400 rounded-sm"></div>
+                    </div>
+                    <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Layout</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="main-wrapper" class="numo-shadow-logic flex-1 relative overflow-hidden max-w-5xl mx-auto w-full">
+            <div class="flex h-full w-full overflow-hidden px-6 gap-0 relative z-10">
+                <div id="scroll-container" class="w-[calc(50%+0.5rem)] flex flex-col h-full overflow-y-auto no-scrollbar scroll-smooth relative transition-all duration-300">
+                    <div id="item-list" class="relative space-y-4 pr-4 pt-6 pb-12">
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 1</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div id="active-card" class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 -right-4 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 2</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 3</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 4</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 5</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 6</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 7</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                        <div class="selectable-item cursor-pointer bg-transparent border-0 p-8 rounded-none flex flex-col relative">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                                <div class="single-col-bg absolute inset-0 rounded-2xl -z-20"></div>
+                                <h2 class="text-xl font-bold text-gray-800">活動項目 8</h2>
+                                <div class="flex items-center gap-2 text-gray-400 font-bold">
+                                    <span class="click-text">點選</span>
+                                    <span class="text-2xl arrow-icon">→</span>
+                                </div>
+                            </div>
+                            <div class="expand-slot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="right-scroll-container" class="w-[calc(50%-0.5rem)] h-full overflow-y-auto no-scrollbar relative z-10 pt-6 pb-12 pl-0 transition-all duration-300">
+                    <div id="main-card" class="w-full relative flex flex-col">
+                        <div class="absolute inset-y-0 left-0 right-0 numo-surface rounded-2xl -z-10"></div>
+                        <div id="main-card-content" class="p-12 bg-transparent border-0 rounded-none min-h-full transition-opacity duration-300">
+                            <div class="mb-6">
+                                <h1 class="text-3xl font-bold text-gray-900">內容主面板</h1>
+                            </div>
+                            <div class="space-y-8">
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed text-lg">
+                                        這是一個動態接縫佈局。左側的活動項目會透過 SVG 路徑實時計算並「縫合」到右側的主面板上。
+                                        當您捲動左側容器時，幾何路徑會自動調整以保持連接感。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        此區域現在已由外部容器承載捲動。主面板本身會隨內容增長而延伸，捲動發生在右側整個區塊。
+                                        幾幾何路徑的計算是基於兩個容器在視窗中的相對位置（BoundingClientRect）。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </p>
+                                </div>
+                                <hr class="border-none">
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 1：這是一個長內容測試。
+                                        我們確保右側面板會因為內容過長而導致右側容器產生捲動。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 2：接縫邏輯依然穩固。
+                                        不論右側內容如何捲動，SVG 路徑始終鎖定在右側面板的物理外殼邊界上。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 3：您可以點擊左側的不同項目，觀察接縫如何動態重新定位。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 4：探索流體佈局的幾何之美。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 5：最後一段測試內容，確保滾動範圍足夠長。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 6：持續延伸內容以觸發右側容器捲動。
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        追加內容區塊 7：測試接縫在側捲動時的實時位置更新。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="seam-bridge-container" class="seam-connector">
+                <svg class="seam-svg">
+                    <defs>
+                        <clipPath id="seam-clip">
+                            <rect x="16" y="-5000" width="100" height="10000" />
+                            <rect id="clip-left" x="0" y="-5000" width="16" height="10000" />
+                        </clipPath>
+                    </defs>
+                    <g id="seam-group">
+                        <path id="path-bridge" class="seam-path" d="" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scrollContainer = document.getElementById("scroll-container");
+        const rightScrollContainer = document.getElementById("right-scroll-container");
+        const mainCard = document.getElementById("main-card");
+        const mainCardContent = document.getElementById("main-card-content");
+        const pathBridge = document.getElementById("path-bridge");
+        const bridgeContainer = document.getElementById("seam-bridge-container");
+        const mainWrapper = document.getElementById("main-wrapper");
+        const layoutToggle = document.getElementById("layout-toggle");
+        const clipLeft = document.getElementById("clip-left");
+        const items = document.querySelectorAll(".selectable-item");
+
+        let activeCard = document.getElementById("active-card");
+        let isSingleColumn = false;
+
+        const W = 32;
+        const halfW = 16;
+        const r2 = 32;
+
+        function updateSeams() {
+            if (!activeCard || isSingleColumn) {
+                bridgeContainer.style.opacity = "0";
+                return;
+            }
+
+            const rectL = activeCard.getBoundingClientRect();
+            const rectR = mainCard.getBoundingClientRect();
+            const wrapperRect = mainWrapper.getBoundingClientRect();
+
+            bridgeContainer.style.top = `${rectL.top - wrapperRect.top}px`;
+            bridgeContainer.style.left = `${rectL.right - wrapperRect.left}px`;
+            bridgeContainer.style.height = `${rectL.height}px`;
+
+            const hL = rectL.height;
+            const yRT = rectR.top - rectL.top;
+            const yRB = rectR.bottom - rectL.top;
+
+            const diffT = yRT;
+            const absDT = Math.max(0.1, Math.abs(diffT));
+            const ry_t = Math.min(absDT / 2, halfW);
+            const sweep1_t = diffT > 0 ? 1 : 0;
+            const sweep2_t = diffT > 0 ? 0 : 1;
+
+            const diffB = hL - yRB;
+            const absDB = Math.max(0.1, Math.abs(diffB));
+            const ry_b = Math.min(absDB / 2, halfW);
+            const sweep1_b = diffB > 0 ? 0 : 1;
+            const sweep2_b = diffB > 0 ? 1 : 0;
+
+            const pathDataLeft = `
+                M 0 0
+                A ${halfW} ${ry_t} 0 0 ${sweep1_t} ${halfW} ${diffT > 0 ? ry_t : -ry_t}
+                L ${halfW} ${hL - (diffB > 0 ? ry_b : -ry_b)}
+                A ${halfW} ${ry_b} 0 0 ${sweep2_b} 0 ${hL}
+                Z
+            `;
+
+            const pathDataRight = `
+                M ${halfW} ${diffT > 0 ? ry_t : -ry_t}
+                L ${halfW} ${yRT - (diffT > 0 ? ry_t : -ry_t)}
+                A ${halfW} ${ry_t} 0 0 ${sweep2_t} ${W} ${yRT}
+                L ${W} ${yRB}
+                A ${halfW} ${ry_b} 0 0 ${sweep1_b} ${halfW} ${yRB + (diffB > 0 ? ry_b : -ry_b)}
+                Z
+            `;
+
+            pathBridge.setAttribute("d", pathDataLeft + " " + pathDataRight);
+
+            const isTooFar = (rectR.top - rectL.bottom > r2) || (rectL.top - rectR.bottom > r2);
+            const hasOverlap = rectL.bottom > wrapperRect.top && rectL.top < wrapperRect.bottom;
+            
+            bridgeContainer.style.opacity = (hasOverlap && !isTooFar) ? "1" : "0";
+        }
+
+        function syncSingleColumnContent(forceMoveBack = false) {
+            if (isSingleColumn && !forceMoveBack) {
+                const targetSlot = activeCard.querySelector('.expand-slot');
+                if (targetSlot && activeCard.classList.contains('is-expanded')) {
+                    while (mainCardContent.firstChild) {
+                        targetSlot.appendChild(mainCardContent.firstChild);
+                    }
+                } else if (targetSlot) {
+                    while (targetSlot.firstChild) {
+                        mainCardContent.appendChild(targetSlot.firstChild);
+                    }
+                }
+            } else {
+                const activeSlot = document.querySelector('.expand-slot:not(:empty)');
+                if (activeSlot) {
+                    while (activeSlot.firstChild) {
+                        mainCardContent.appendChild(activeSlot.firstChild);
+                    }
+                }
+            }
+        }
+
+        layoutToggle.addEventListener("click", () => {
+            isSingleColumn = !isSingleColumn;
+            document.body.classList.toggle("single-column-mode", isSingleColumn);
+            
+            if (isSingleColumn) {
+                mainCardContent.classList.add("opacity-0");
+                scrollContainer.classList.replace("w-[calc(50%+0.5rem)]", "w-full");
+                rightScrollContainer.classList.add("hidden");
+                if (activeCard) activeCard.classList.add('is-expanded');
+                syncSingleColumnContent();
+            } else {
+                syncSingleColumnContent(true);
+                items.forEach(item => item.classList.remove('is-expanded'));
+                scrollContainer.classList.replace("w-full", "w-[calc(50%+0.5rem)]");
+                rightScrollContainer.classList.remove("hidden");
+                mainCardContent.classList.add("opacity-0");
+                setTimeout(() => {
+                    mainCardContent.classList.remove("opacity-0");
+                }, 300);
+            }
+            
+            let start = null;
+            const syncSeams = (timestamp) => {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                updateSeams();
+                if (progress < 300) {
+                    requestAnimationFrame(syncSeams);
+                }
+            };
+            requestAnimationFrame(syncSeams);
+        });
+
+        items.forEach(item => {
+            item.addEventListener("click", () => {
+                if (isSingleColumn && activeCard === item) {
+                    item.classList.toggle('is-expanded');
+                    syncSingleColumnContent();
+                    return;
+                }
+
+                if (activeCard === item) return;
+
+                const prevBg = activeCard.querySelector('.absolute:not(.single-col-bg)');
+                if (prevBg) {
+                    prevBg.classList.remove('-right-4');
+                    prevBg.classList.add('right-0');
+                }
+                activeCard.classList.remove('border-r-0');
+                activeCard.classList.remove('is-expanded');
+                syncSingleColumnContent(true);
+                activeCard.removeAttribute('id');
+
+                if (!isSingleColumn) {
+                    const ghost = bridgeContainer.cloneNode(true);
+                    const uniqueId = "clip-" + Math.random().toString(36).substr(2, 9);
+                    ghost.querySelector("clipPath").id = uniqueId;
+                    const ghostPaths = ghost.querySelectorAll(".seam-path");
+                    ghostPaths.forEach(p => p.style.clipPath = `url(#${uniqueId})`);
+                    mainWrapper.appendChild(ghost);
+
+                    const ghostClip = ghost.querySelector('rect[id="clip-left"]');
+                    ghostClip.style.transition = 'x 0.3s, width 0.3s';
+                    
+                    ghostClip.setAttribute("x", "0");
+                    ghostClip.setAttribute("width", "16");
+                    ghostClip.getBoundingClientRect();
+                    
+                    ghostClip.setAttribute("x", "16");
+                    ghostClip.setAttribute("width", "0");
+                    setTimeout(() => ghost.remove(), 300);
+                }
+
+                activeCard = item;
+                activeCard.id = 'active-card';
+                const nextBg = activeCard.querySelector('.absolute:not(.single-col-bg)');
+                if (nextBg) {
+                    nextBg.classList.remove('right-0');
+                    nextBg.classList.add('-right-4');
+                }
+                activeCard.classList.add('border-r-0');
+                
+                if (isSingleColumn) {
+                    activeCard.classList.add('is-expanded');
+                    syncSingleColumnContent();
+                }
+
+                updateSeams();
+
+                if (!isSingleColumn) {
+                    clipLeft.style.transition = 'none';
+                    clipLeft.setAttribute("x", "16");
+                    clipLeft.setAttribute("width", "0");
+                    clipLeft.getBoundingClientRect();
+
+                    clipLeft.style.transition = 'x 0.3s, width 0.3s';
+                    requestAnimationFrame(() => {
+                        clipLeft.setAttribute("x", "0");
+                        clipLeft.setAttribute("width", "16");
+                    });
+                }
+            });
+        });
+
+        scrollContainer.addEventListener("scroll", updateSeams);
+        rightScrollContainer.addEventListener("scroll", updateSeams);
+        window.addEventListener("resize", updateSeams);
+
+        setTimeout(updateSeams, 100);
+    </script>
+</body>
+</html>
