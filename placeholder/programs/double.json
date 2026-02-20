@@ -16,7 +16,9 @@
                         "max": 51,
                         "remain": 0,
                         "quota": 0,
-                        "waived": 0
+                        "waived": 0,
+                        "isExempted": false,
+                        "isOptionalExempted": false
                     }
                 ],
                 "records": [],
@@ -35,7 +37,9 @@
                                 "max": 21,
                                 "remain": 0,
                                 "quota": 0,
-                                "waived": 0
+                                "waived": 0,
+                                "isExempted": false,
+                                "isOptionalExempted": false
                             }
                         ],
                         "records": [
@@ -140,7 +144,9 @@
                                 "max": 18,
                                 "remain": 0,
                                 "quota": 0,
-                                "waived": 0
+                                "waived": 0,
+                                "isExempted": false,
+                                "isOptionalExempted": false
                             }
                         ],
                         "records": [
@@ -230,7 +236,9 @@
                                 "max": 12,
                                 "remain": 0,
                                 "quota": 0,
-                                "waived": 0
+                                "waived": 0,
+                                "isExempted": false,
+                                "isOptionalExempted": false
                             }
                         ],
                         "records": [
