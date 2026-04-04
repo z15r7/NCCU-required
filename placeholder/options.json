@@ -1,0 +1,23 @@
+{
+    "majorLevel": "DOUBLE_AS_MAJOR",
+    "minorOptions": [
+        "MINOR_1",
+        "MAJOR_AS_MINOR",
+        "DOUBLE_AS_MINOR"
+    ],
+    "programLabels": {
+        "major": {
+            "departmentLabel": "中國文學系",
+            "groupLabel": ""
+        },
+        "double": {
+            "departmentLabel": "公行系",
+            "groupLabel": ""
+        },
+        "minor1": {
+            "departmentLabel": "政治系",
+            "groupLabel": ""
+        },
+        "minor2": null
+    }
+}
