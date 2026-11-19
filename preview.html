@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>子群呈現預覽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Outfit:wght@400;500;700&display=swap");
+
+      /* 色彩、陰影與文字類別取自 demo/public/index.html 的同名定義。 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --c-primary: #7188b4;
+        --c-text-main: #616161;
+        --c-text-sub: #aeaeb2;
+        --c-bg: #f0f0f0;
+        --radius-base: 1rem;
+        --inner-card-radius: var(--radius-base);
+        --accordion-motion: 0.3s ease;
+      }
+
+      body {
+        font-family: "Outfit", "Noto Sans TC", sans-serif;
+        background-color: var(--c-bg);
+        margin: 0;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      .neumorphism-card {
+        background: var(--c-bg);
+        border-radius: 1rem;
+        filter: drop-shadow(3px 3px 4px #00000014)
+          drop-shadow(-3px -3px 4px #fcfcfc);
+      }
+
+      .accordion-container {
+        border-radius: var(--inner-card-radius);
+        overflow: hidden;
+        position: relative;
+        background-color: var(--c-bg);
+        box-shadow:
+          inset 4px 4px 8px rgba(163, 177, 198, 0.3),
+          inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+      }
+
+      .shadow-layer-header,
+      .shadow-layer-footer,
+      .shadow-layer-body {
+        background-color: transparent;
+        position: relative;
+      }
+
+      .shadow-layer-single {
+        background-color: var(--c-bg);
+        position: relative;
+        border-radius: var(--inner-card-radius);
+        box-shadow:
+          inset 4px 4px 8px rgba(163, 177, 198, 0.3),
+          inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+      }
+
+      .shadow-layer-header {
+        z-index: 30;
+        box-shadow: 0 4px 8px rgba(163, 177, 198, 0.25);
+      }
+
+      .shadow-layer-footer {
+        z-index: 20;
+        transition: box-shadow var(--accordion-motion);
+      }
+
+      .shadow-layer-footer-open {
+        box-shadow: 0 -4px 8px rgba(255, 255, 255, 0.5);
+      }
+
+      .neumorphism-btn-active {
+        color: var(--c-primary);
+        font-weight: 700;
+        box-shadow:
+          inset 2px 2px 4px rgba(163, 177, 198, 0.2),
+          inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+      }
+
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .text-main { color: var(--c-text-main); }
+      .text-sub { color: var(--c-text-sub); }
+      .text-primary { color: var(--c-primary); }
+      .text-inverse-main { color: var(--c-bg); }
+      .bg-primary { background-color: var(--c-primary); }
+      .bg-main { background-color: var(--c-text-main); }
+      .border-main { border-color: var(--c-text-main); }
+    </style>
+  </head>
+
+  <body>
+    <!-- 圖示取自 demo/public/icon.svg 的同名 symbol（file:// 無法跨檔引用，內嵌於此）。 -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden" aria-hidden="true">
+      <symbol id="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6" />
+      </symbol>
+      <symbol id="cluster" viewBox="0 0 45 45" fill="currentColor">
+        <path d="M36.3,27.2c-0.2-0.1-0.4-0.2-0.6-0.4c-1.3,0.7-2.6,1.4-4,2c-3.4,1.6-6.2,2.4-7.7,2.7c-1,0.2-2.1,0.2-3.1,0c-1.4-0.3-4.2-1.1-7.7-2.7c-1.3-0.6-2.7-1.3-4-2c-0.2,0.1-0.4,0.3-0.6,0.4c-1.3,0.8-1.3,2.6,0,3.4c1.1,0.7,2.9,1.7,5.4,2.9c3.3,1.5,5.9,2.3,7.3,2.6c0.7,0.2,1.5,0.2,2.2,0c1.3-0.3,4-1,7.3-2.6c2.6-1.2,4.3-2.2,5.4-2.9C37.6,29.8,37.6,28.1,36.3,27.2z" />
+        <path d="M8.7,24.2c1.1,0.7,2.9,1.7,5.4,2.9c3.3,1.5,5.9,2.3,7.3,2.6c0.7,0.2,1.5,0.2,2.2,0c1.3-0.3,4-1,7.3-2.6c2.6-1.2,4.3-2.2,5.4-2.9c1.3-0.8,1.3-2.6,0-3.4c-0.2-0.1-0.4-0.2-0.6-0.4c-1.3,0.7-2.6,1.4-4,2c-3.4,1.6-6.2,2.4-7.7,2.7c-1,0.2-2.1,0.2-3.1,0c-1.4-0.3-4.2-1.1-7.7-2.7c-1.3-0.6-2.7-1.3-4-2c-0.2,0.1-0.4,0.3-0.6,0.4C7.4,21.6,7.4,23.4,8.7,24.2z" />
+        <path d="M8.7,17.8c1.1,0.7,2.9,1.7,5.4,2.9c3.3,1.5,5.9,2.3,7.3,2.6c0.7,0.2,1.5,0.2,2.2,0c1.3-0.3,4-1,7.3-2.6c2.6-1.2,4.3-2.2,5.4-2.9c1.3-0.8,1.3-2.6,0-3.4c-1.1-0.7-2.9-1.7-5.4-2.9c-3.3-1.5-5.9-2.3-7.3-2.6c-0.7-0.2-1.5-0.2-2.2,0c-1.3,0.3-4,1-7.3,2.6c-2.6,1.2-4.3,2.2-5.4,2.9C7.4,15.2,7.4,16.9,8.7,17.8z" />
+      </symbol>
+    </svg>
+    <div id="app"></div>
+    <script>
+      const { createApp, ref, computed } = Vue;
+
+      /**
+       * 目前的 /api/v1/check/programs?major=MAJOR 群修分類（2026-11-19 curl 取得，只留畫面讀取的欄位）。
+       * 子群規則（各軌）不在回應中；檢查點只有 label 與 stats 被畫面讀取。
+       */
+      const CURRENT_RESPONSES = Object.freeze({
+        "zu1-112-major": {
+          stats: [
+            { metric: "CREDIT", actual: 18, min: 27, max: 27, remain: 9 },
+            { metric: "COURSE", actual: 4, min: 5, max: 5, remain: 1 },
+          ],
+          requirements: [
+            {
+              code: "MAJOR__ZU1__0__rule-群A",
+              label: "群A",
+              description: "群A：十選五，共15學分。",
+              stats: [
+                { metric: "CREDIT", actual: 12, min: 15, max: 15, remain: 3 },
+                { metric: "COURSE", actual: 4, min: 5, max: 5, remain: 1 },
+              ],
+              records: [
+                { name: "人類學", scoreStatus: "NORMAL", score: 64.96, credit: 3, academicYear: 114, semester: 1, note: null },
+                { name: "國際公法", scoreStatus: "NORMAL", score: 72.92, credit: 3, academicYear: 113, semester: 2, note: null },
+                { name: "資料科學", scoreStatus: "NORMAL", score: 82.99, credit: 3, academicYear: 113, semester: 1, note: null },
+                { name: "AI導論", scoreStatus: "NORMAL", score: 68.49, credit: 3, academicYear: 112, semester: 2, note: null },
+              ],
+            },
+            {
+              code: "MAJOR__ZU1__0__rule-群B",
+              label: "群B",
+              description: "群B：須修習12學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "CREDIT", actual: 6, min: 12, max: 12, remain: 6 }],
+              records: [
+                { name: "設計思維", scoreStatus: "NORMAL", score: 75.44, credit: 3, academicYear: 114, semester: 1, note: null },
+                { name: "AI與倫理", scoreStatus: "NORMAL", score: 74.48, credit: 3, academicYear: 114, semester: 1, note: "COUNTED_IN_OTHER_ITEM" },
+              ],
+            },
+          ],
+          checkpoints: [
+            {
+              code: "MAJOR__ZU1__0__rule-群B·擇2",
+              label: "rule-群B·擇2",
+              description: "群B：須修習12學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "RULE", actual: 2, min: 2, max: null, remain: 0 }],
+            },
+          ],
+        },
+        "zu1-113-major": {
+          stats: [
+            { metric: "CREDIT", actual: 9, min: 33, max: 33, remain: 24 },
+            { metric: "COURSE", actual: 3, min: 6, max: 6, remain: 3 },
+          ],
+          requirements: [
+            {
+              code: "MAJOR__ZU1__0__rule-群A",
+              label: "群A",
+              description: "群A：十選六，共18學分。",
+              stats: [
+                { metric: "CREDIT", actual: 9, min: 18, max: 18, remain: 9 },
+                { metric: "COURSE", actual: 3, min: 6, max: 6, remain: 3 },
+              ],
+              records: [
+                { name: "人文地理", scoreStatus: "PENDING", score: null, credit: 3, academicYear: 114, semester: 2, note: null },
+                { name: "人類學", scoreStatus: "NORMAL", score: 96.11, credit: 3, academicYear: 114, semester: 1, note: null },
+                { name: "資料科學", scoreStatus: "NORMAL", score: 81.74, credit: 3, academicYear: 114, semester: 1, note: null },
+                { name: "AI導論", scoreStatus: "NORMAL", score: 96.04, credit: 3, academicYear: 113, semester: 2, note: null },
+              ],
+            },
+            {
+              code: "MAJOR__ZU1__0__rule-群B",
+              label: "群B",
+              description: "群B：須修習15學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "CREDIT", actual: 0, min: 15, max: 15, remain: 15 }],
+              records: [
+                { name: "大數據與社會分析", scoreStatus: "PENDING", score: null, credit: 3, academicYear: 114, semester: 2, note: null },
+              ],
+            },
+          ],
+          checkpoints: [
+            {
+              code: "MAJOR__ZU1__0__rule-群B·擇2",
+              label: "rule-群B·擇2",
+              description: "群B：須修習15學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "RULE", actual: 0, min: 2, max: null, remain: 2 }],
+            },
+            {
+              code: "MAJOR__ZU1__0__rule-專業認定",
+              label: "rule-專業認定",
+              description: "2.本學士班課程分三軌：「永續與社會（SS）」、「全球治理（GG）」、「資料分析（DA）」，畢業學分群B要求三軌之中擇二修滿15學分。本學士班學位證書須載明學生專業，專業認定之標準應於群A修習達6學分且群B達9學分，學生未符前項專業認定標準者不得畢業，如符合二專業時，應擇一專業登載於學位證書。",
+              stats: [{ metric: "RULE", actual: 0, min: 1, max: null, remain: 1 }],
+            },
+          ],
+        },
+        "781-double": {
+          stats: [{ metric: "CREDIT", actual: 3, min: 12, max: null, remain: 9 }],
+          requirements: [
+            {
+              code: "DOUBLE__781__0__rule-群A",
+              label: "群A",
+              description: "群A：內容與設計類，至少6學分",
+              message: null,
+              stats: [{ metric: "CREDIT", actual: 3, min: 6, max: null, remain: 3 }],
+              records: [
+                { name: "人機互動設計", scoreStatus: "NORMAL", score: 73.8, credit: 3, academicYear: 114, semester: 1, note: null },
+              ],
+            },
+            {
+              code: "DOUBLE__781__0__rule-群B",
+              label: "群B",
+              description: "群B：科技與應用類，至少6學分",
+              message: null,
+              stats: [{ metric: "CREDIT", actual: 0, min: 6, max: null, remain: 6 }],
+              records: [],
+            },
+          ],
+          checkpoints: [
+            {
+              code: "DOUBLE__781__0__rule-群A+群B",
+              label: "rule-群A+群B",
+              description: "群A及群B合計至少33學分",
+              stats: [{ metric: "CREDIT", actual: 3, min: 33, max: null, remain: 30 }],
+            },
+          ],
+        },
+        "783-double": {
+          stats: [{ metric: "COURSE", actual: 5, min: 11, max: null, remain: 9 }],
+          requirements: [
+            {
+              code: "DOUBLE__783__0__rule-群A",
+              label: "群A",
+              description: "第一類(群A)：知識（概念）—程式設計及方法。非資訊系學生至少選2門，第一至二類至少選4門。資訊系(含輔系)學生修習第一、二類不計入學程畢業學分。",
+              message: null,
+              stats: [{ metric: "COURSE", actual: 1, min: 2, max: null, remain: 1 }],
+              records: [
+                { name: "人工智慧方法與工具", scoreStatus: "NORMAL", score: 95.7, credit: 3, academicYear: 114, semester: 1, note: null },
+              ],
+            },
+            {
+              code: "DOUBLE__783__0__rule-群B",
+              label: "群B",
+              description: "第二類(群B)：知識（概念）—數理邏輯。非資訊系學生至少選1門，第一至二類至少選4門。資訊系(含輔系)學生修習第一、二類不計入學程畢業學分。",
+              message: null,
+              stats: [{ metric: "COURSE", actual: 4, min: 1, max: null, remain: 0 }],
+              records: [
+                { name: "機率論", scoreStatus: "NORMAL", score: 95.3, credit: 3, academicYear: 113, semester: 1, note: null },
+                { name: "線性代數", scoreStatus: "NORMAL", score: 80.19, credit: 3, academicYear: 112, semester: 2, note: null },
+                { name: "統計學（一）", scoreStatus: "NORMAL", score: 98.3, credit: 3, academicYear: 112, semester: 1, note: null },
+                { name: "線性代數", scoreStatus: "NORMAL", score: 89.25, credit: 3, academicYear: 112, semester: 1, note: null },
+              ],
+            },
+            {
+              code: "DOUBLE__783__0__rule-群C",
+              label: "群C",
+              description: "第三類(群C)：技術（工具）。非資訊系學生至少選4門，資訊系(含輔系)學生至少選7門，科目列表請見學程網站。",
+              message: "VERIFY_COURSE_LIST_ON_WEBSITE",
+              stats: [{ metric: "COURSE", actual: 0, min: 4, max: null, remain: 4 }],
+              records: [],
+            },
+            {
+              code: "DOUBLE__783__0__rule-群D",
+              label: "群D",
+              description: "第四類(群D)：應用（能力）。非資訊系學生至少選4門，資訊系(含輔系)學生至少選5門，科目列表請見學程網站。",
+              message: "VERIFY_COURSE_LIST_ON_WEBSITE",
+              stats: [{ metric: "COURSE", actual: 0, min: 4, max: null, remain: 4 }],
+              records: [],
+            },
+          ],
+          checkpoints: [
+            {
+              code: "DOUBLE__783__0__rule-群A+群B",
+              label: "rule-群A+群B",
+              description: "第一類(群A)：知識（概念）—程式設計及方法。非資訊系學生至少選2門，第一至二類至少選4門。資訊系(含輔系)學生修習第一、二類不計入學程畢業學分。",
+              stats: [{ metric: "COURSE", actual: 5, min: 4, max: null, remain: 0 }],
+            },
+            {
+              code: "DOUBLE__783__0__rule-群A+群B+群C+群D",
+              label: "rule-群A+群B+群C+群D",
+              description: "（二）群修：至少 36 學分。",
+              stats: [{ metric: "CREDIT", actual: 15, min: 36, max: null, remain: 21 }],
+            },
+          ],
+        },
+      });
+
+      /**
+       * 規劃中的回應形狀：群組帶 subgroups（子群規則依 subgroupOf 掛在所屬群組），
+       * 檢查點帶 components（組合規則引用的規則，可多層）。
+       * 數值依科目表課群（/profile/programs 的 subjects[].curriculumIds）與目前回應推算，屬手寫範例。
+       * 子群的影子（擇一採計後未採計的一軌）以 credit 0 與 COUNTED_IN_OTHER_ITEM 表示。
+       * 分類 stats：合計型檢查點視為所涵蓋群組的上層節點，門檻與還差取「自身」與「各群組加總」兩者較大者。
+       * 組成項目：帶 min 者為須各自達成的項目（擇 M），min 為 null 者為合計中的貢獻量。
+       * combinator：組成項目的組合方式（ALL 全部達成、ANY 任 M 項達成（M＝自身 stats 的 min）、SUM 合計），由後端明確給出。
+       */
+      const PROPOSED_RESPONSES = Object.freeze({
+        "zu1-112-major": {
+          stats: [
+            { metric: "CREDIT", actual: 18, min: 27, max: 27, remain: 9 },
+            { metric: "COURSE", actual: 4, min: 5, max: 5, remain: 1 },
+          ],
+          subgroupsByGroup: {
+            "MAJOR__ZU1__0__rule-群A": [
+              {
+                code: "MAJOR__ZU1__0__rule-群A·SS",
+                label: "永續與社會（SS）",
+                stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }],
+                records: [{ name: "人類學", scoreStatus: "NORMAL", score: 64.96, credit: 3, academicYear: 114, semester: 1, note: null }],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群A·GG",
+                label: "全球治理（GG）",
+                stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }],
+                records: [{ name: "國際公法", scoreStatus: "NORMAL", score: 72.92, credit: 3, academicYear: 113, semester: 2, note: null }],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群A·DA",
+                label: "資料分析（DA）",
+                stats: [{ metric: "COURSE", actual: 2, min: 1, max: null, remain: 0 }],
+                records: [
+                  { name: "資料科學", scoreStatus: "NORMAL", score: 82.99, credit: 3, academicYear: 113, semester: 1, note: null },
+                  { name: "AI導論", scoreStatus: "NORMAL", score: 68.49, credit: 3, academicYear: 112, semester: 2, note: null },
+                ],
+              },
+            ],
+            "MAJOR__ZU1__0__rule-群B": [
+              {
+                code: "MAJOR__ZU1__0__rule-群B·SS",
+                label: "永續與社會（SS）",
+                stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }],
+                records: [],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群B·GG",
+                label: "全球治理（GG）",
+                stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }],
+                records: [{ name: "AI與倫理", scoreStatus: "NORMAL", score: 74.48, credit: 3, academicYear: 114, semester: 1, note: null }],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群B·DA",
+                label: "資料分析（DA）",
+                stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }],
+                records: [
+                  { name: "設計思維", scoreStatus: "NORMAL", score: 75.44, credit: 3, academicYear: 114, semester: 1, note: null },
+                  { name: "AI與倫理", scoreStatus: "NORMAL", score: 74.48, credit: 0, academicYear: 114, semester: 1, note: "COUNTED_IN_OTHER_ITEM" },
+                ],
+              },
+            ],
+          },
+          checkpoints: [
+            {
+              code: "MAJOR__ZU1__0__rule-群B·擇2",
+              label: "群B 三軌擇二",
+              combinator: "ANY",
+              description: "群B：須修習12學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "RULE", actual: 2, min: 2, max: null, remain: 0 }],
+              components: [
+                { code: "MAJOR__ZU1__0__rule-群B·SS", label: "永續與社會（SS）", stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }] },
+                { code: "MAJOR__ZU1__0__rule-群B·GG", label: "全球治理（GG）", stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }] },
+                { code: "MAJOR__ZU1__0__rule-群B·DA", label: "資料分析（DA）", stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }] },
+              ],
+            },
+          ],
+        },
+        "zu1-113-major": {
+          stats: [
+            { metric: "CREDIT", actual: 9, min: 33, max: 33, remain: 24 },
+            { metric: "COURSE", actual: 3, min: 6, max: 6, remain: 3 },
+          ],
+          subgroupsByGroup: {
+            "MAJOR__ZU1__0__rule-群A": [
+              {
+                code: "MAJOR__ZU1__0__rule-群A·SS",
+                label: "永續與社會（SS）",
+                stats: [{ metric: "COURSE", actual: 1, min: 1, max: null, remain: 0 }],
+                records: [
+                  { name: "人文地理", scoreStatus: "PENDING", score: null, credit: 3, academicYear: 114, semester: 2, note: null },
+                  { name: "人類學", scoreStatus: "NORMAL", score: 96.11, credit: 3, academicYear: 114, semester: 1, note: null },
+                ],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群A·GG",
+                label: "全球治理（GG）",
+                stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }],
+                records: [],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群A·DA",
+                label: "資料分析（DA）",
+                stats: [{ metric: "COURSE", actual: 2, min: 1, max: null, remain: 0 }],
+                records: [
+                  { name: "資料科學", scoreStatus: "NORMAL", score: 81.74, credit: 3, academicYear: 114, semester: 1, note: null },
+                  { name: "AI導論", scoreStatus: "NORMAL", score: 96.04, credit: 3, academicYear: 113, semester: 2, note: null },
+                ],
+              },
+            ],
+            "MAJOR__ZU1__0__rule-群B": [
+              {
+                code: "MAJOR__ZU1__0__rule-群B·SS",
+                label: "永續與社會（SS）",
+                stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }],
+                records: [],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群B·GG",
+                label: "全球治理（GG）",
+                stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }],
+                records: [],
+              },
+              {
+                code: "MAJOR__ZU1__0__rule-群B·DA",
+                label: "資料分析（DA）",
+                stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }],
+                records: [{ name: "大數據與社會分析", scoreStatus: "PENDING", score: null, credit: 3, academicYear: 114, semester: 2, note: null }],
+              },
+            ],
+          },
+          checkpoints: [
+            {
+              code: "MAJOR__ZU1__0__rule-群B·擇2",
+              label: "群B 三軌擇二",
+              combinator: "ANY",
+              description: "群B：須修習15學分，並由以下三軌中挑選兩軌課程修習：永續與社會(SS)、全球治理(GG)、資料分析(DA)",
+              stats: [{ metric: "RULE", actual: 0, min: 2, max: null, remain: 2 }],
+              components: [
+                { code: "MAJOR__ZU1__0__rule-群B·SS", label: "永續與社會（SS）", stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }] },
+                { code: "MAJOR__ZU1__0__rule-群B·GG", label: "全球治理（GG）", stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }] },
+                { code: "MAJOR__ZU1__0__rule-群B·DA", label: "資料分析（DA）", stats: [{ metric: "COURSE", actual: 0, min: 1, max: null, remain: 1 }] },
+              ],
+            },
+            {
+              code: "MAJOR__ZU1__0__rule-專業認定",
+              label: "專業認定（三軌擇一）",
+              combinator: "ANY",
+              description: "2.本學士班課程分三軌：「永續與社會（SS）」、「全球治理（GG）」、「資料分析（DA）」，畢業學分群B要求三軌之中擇二修滿15學分。本學士班學位證書須載明學生專業，專業認定之標準應於群A修習達6學分且群B達9學分，學生未符前項專業認定標準者不得畢業，如符合二專業時，應擇一專業登載於學位證書。",
+              stats: [{ metric: "RULE", actual: 0, min: 1, max: null, remain: 1 }],
+              components: [
+                {
+                  code: "MAJOR__ZU1__0__rule-SS·專業",
+                  label: "永續與社會（SS）",
+                  combinator: "ALL",
+                  stats: [{ metric: "RULE", actual: 0, min: 2, max: null, remain: 2 }],
+                  components: [
+                    { code: "MAJOR__ZU1__0__rule-群A·SS·專業", label: "群A", stats: [{ metric: "CREDIT", actual: 3, min: 6, max: null, remain: 3 }] },
+                    { code: "MAJOR__ZU1__0__rule-群B·SS·專業", label: "群B", stats: [{ metric: "CREDIT", actual: 0, min: 9, max: null, remain: 9 }] },
+                  ],
+                },
+                {
+                  code: "MAJOR__ZU1__0__rule-GG·專業",
+                  label: "全球治理（GG）",
+                  combinator: "ALL",
+                  stats: [{ metric: "RULE", actual: 0, min: 2, max: null, remain: 2 }],
+                  components: [
+                    { code: "MAJOR__ZU1__0__rule-群A·GG·專業", label: "群A", stats: [{ metric: "CREDIT", actual: 0, min: 6, max: null, remain: 6 }] },
+                    { code: "MAJOR__ZU1__0__rule-群B·GG·專業", label: "群B", stats: [{ metric: "CREDIT", actual: 0, min: 9, max: null, remain: 9 }] },
+                  ],
+                },
+                {
+                  code: "MAJOR__ZU1__0__rule-DA·專業",
+                  label: "資料分析（DA）",
+                  combinator: "ALL",
+                  stats: [{ metric: "RULE", actual: 1, min: 2, max: null, remain: 1 }],
+                  components: [
+                    { code: "MAJOR__ZU1__0__rule-群A·DA·專業", label: "群A", stats: [{ metric: "CREDIT", actual: 6, min: 6, max: null, remain: 0 }] },
+                    { code: "MAJOR__ZU1__0__rule-群B·DA·專業", label: "群B", stats: [{ metric: "CREDIT", actual: 0, min: 9, max: null, remain: 9 }] },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "781-double": {
+          stats: [{ metric: "CREDIT", actual: 3, min: 33, max: null, remain: 30 }],
+          subgroupsByGroup: {},
+          checkpoints: [
+            {
+              code: "DOUBLE__781__0__rule-群A+群B",
+              label: "群A＋群B 合計",
+              combinator: "SUM",
+              description: "群A及群B合計至少33學分",
+              stats: [{ metric: "CREDIT", actual: 3, min: 33, max: null, remain: 30 }],
+              components: [
+                { code: "DOUBLE__781__0__rule-群A", label: "群A", stats: [{ metric: "CREDIT", actual: 3, min: null, max: null, remain: null }] },
+                { code: "DOUBLE__781__0__rule-群B", label: "群B", stats: [{ metric: "CREDIT", actual: 0, min: null, max: null, remain: null }] },
+              ],
+            },
+          ],
+        },
+        "783-double": {
+          stats: [
+            { metric: "CREDIT", actual: 15, min: 36, max: null, remain: 21 },
+            { metric: "COURSE", actual: 5, min: 12, max: null, remain: 9 },
+          ],
+          subgroupsByGroup: {},
+          checkpoints: [
+            {
+              code: "DOUBLE__783__0__rule-群A+群B",
+              label: "群A＋群B 合計",
+              combinator: "SUM",
+              description: "第一類(群A)：知識（概念）—程式設計及方法。非資訊系學生至少選2門，第一至二類至少選4門。資訊系(含輔系)學生修習第一、二類不計入學程畢業學分。",
+              stats: [{ metric: "COURSE", actual: 5, min: 4, max: null, remain: 0 }],
+              components: [
+                { code: "DOUBLE__783__0__rule-群A", label: "群A", stats: [{ metric: "COURSE", actual: 1, min: null, max: null, remain: null }] },
+                { code: "DOUBLE__783__0__rule-群B", label: "群B", stats: [{ metric: "COURSE", actual: 4, min: null, max: null, remain: null }] },
+              ],
+            },
+            {
+              code: "DOUBLE__783__0__rule-群A+群B+群C+群D",
+              label: "群A～群D 合計",
+              combinator: "SUM",
+              description: "（二）群修：至少 36 學分。",
+              stats: [{ metric: "CREDIT", actual: 15, min: 36, max: null, remain: 21 }],
+              components: [
+                { code: "DOUBLE__783__0__rule-群A", label: "群A", stats: [{ metric: "CREDIT", actual: 3, min: null, max: null, remain: null }] },
+                { code: "DOUBLE__783__0__rule-群B", label: "群B", stats: [{ metric: "CREDIT", actual: 12, min: null, max: null, remain: null }] },
+                { code: "DOUBLE__783__0__rule-群C", label: "群C", stats: [{ metric: "CREDIT", actual: 0, min: null, max: null, remain: null }] },
+                { code: "DOUBLE__783__0__rule-群D", label: "群D", stats: [{ metric: "CREDIT", actual: 0, min: null, max: null, remain: null }] },
+              ],
+            },
+          ],
+        },
+      });
+
+      /**
+       * 分頁：每一頁對應一種條件型態。subtitle 依 index.html resolveCategorySubtitle 的格式
+       * （身分前綴：/check/options 的 programLabels.departmentLabel）。
+       */
+      const SCENARIOS = Object.freeze([
+        { id: "zu1-112-major", title: "ZU1 112 主修", kind: "子群：三軌擇二", subtitle: "本系：創新國際學院學士班" },
+        { id: "zu1-113-major", title: "ZU1 113 主修", kind: "子群：擇二＋專業認定", subtitle: "本系：創新國際學院學士班" },
+        { id: "781-double", title: "781 雙主修", kind: "合計：群A＋群B", subtitle: "雙主修：數位學" },
+        { id: "783-double", title: "783 雙主修", kind: "合計：門數與學分各一", subtitle: "雙主修：人智應學士" },
+      ]);
+
+      /**
+       * 顯示文字，逐字取自 index.html 的 GC.uiText.progress／requirement、AbstractListItem 的對照表與 Notice 元件
+       * （鍵＝後端列舉的值；只列預覽用得到者）。
+       */
+      const LABELS = Object.freeze({
+        progress: { EXEMPTED: "免修", COMPLETED: "已修完", REMAINING: "剩餘", ACTUAL: "共計", QUOTA: "剩餘額度" },
+        progressUnits: { CREDIT: "", COURSE: "門", RULE: "類" },
+        requirementUnits: { CREDIT: "學分", COURSE: "門" },
+        requirement: {
+          TOTAL_REQUIRED: "應修習總數",
+          NO_COURSE_GENERIC: "尚未修習此類課程",
+          FOOTER_COMPLETED: "已達此類課程修習標準",
+          FOOTER_STUDIED_PREFIX: "已修 ",
+          FOOTER_STUDIED_SUFFIX: " 門課程",
+        },
+        scoreStatus: { WAIVED: "已抵免", PENDING: "未到", MISSING: "未修", WITHDRAWN: "停修", EXEMPTED: "免修", PASSED_TEXT: "通過", FAILED_TEXT: "不通過", UNKNOWN: "未知" },
+        notes: { COUNTED_IN_OTHER_ITEM: "同一門課僅能擇一採計，已採計於其他項目" },
+        messages: { VERIFY_COURSE_LIST_ON_WEBSITE: "＊此群組的課程清單公布於系所網頁，系統暫不檢核，請自行確認。" },
+        categories: { PARTIALLY_REQUIRED: "群修" },
+        isMet: (stat) => typeof stat.min === "number" && stat.actual >= stat.min,
+      });
+
+      /**
+       * 對應 index.html 的 ProgressStats（size small）與 createProgressEntry：取第一個未達門檻的統計項，
+       * 依 scope（category／group）與 isCheckpoint 決定顯示「共計／剩餘／剩餘額度」或實心膠囊「已修完」。
+       * 分支逐條沿用 demo，以便左右比較時呈現一致。
+       */
+      const ProgressStats = {
+        props: {
+          stats: Array,
+          scope: { type: String, default: "category" },
+          isCheckpoint: { type: Boolean, default: false },
+        },
+        setup(props) {
+          const entryOf = (type, metric, value) => ({
+            type,
+            isPill: type === "COMPLETED",
+            label: type === "COMPLETED" ? "" : LABELS.progress[type],
+            value: type === "COMPLETED" ? LABELS.progress.COMPLETED : String(value),
+            unit: type === "COMPLETED" ? "" : LABELS.progressUnits[metric],
+          });
+          const typesOf = (item) => {
+            const hasMin = typeof item.min === "number" && item.min > 0;
+            const remain = Math.max(0, item.remain ?? 0);
+            const quota = Math.max(0, item.quota ?? 0);
+            if (props.scope === "group" && !props.isCheckpoint && hasMin) {
+              if (remain > 0) return [["ACTUAL", item.actual], ["REMAINING", remain]];
+              if (quota > 0) return [["ACTUAL", item.actual], ["QUOTA", quota]];
+              return [["COMPLETED", item.actual]];
+            }
+            if (props.scope === "group" && !props.isCheckpoint && quota > 0) {
+              return [["ACTUAL", item.actual], ["QUOTA", quota]];
+            }
+            if (hasMin && item.actual >= item.min) return [["COMPLETED", item.actual]];
+            if (hasMin && (props.scope === "category" || props.isCheckpoint)) return [["REMAINING", remain]];
+            if (hasMin) return [["ACTUAL", item.actual], ["REMAINING", remain]];
+            return [["ACTUAL", item.actual]];
+          };
+          const entries = computed(() => {
+            const item = props.stats.find((stat) => (stat.remain ?? 0) > 0) || props.stats[0];
+            return typesOf(item).map(([type, value]) => entryOf(type, item.metric, value));
+          });
+          const isCategory = computed(() => props.scope === "category");
+          return { entries, isCategory };
+        },
+        template: `
+          <div :class="[!isCategory ? 'justify-end' : '']">
+            <div :class="['flex items-baseline gap-3 text-sm', !isCategory ? 'justify-end' : '']">
+              <div v-for="(entry, idx) in entries" :key="idx" :class="['flex items-baseline gap-1', entry.isPill ? 'bg-main px-3 py-1 rounded-full shadow-sm text-inverse-main' : '']">
+                <div v-if="entry.label" class="text-sm text-main">{{ entry.label }}</div>
+                <div :class="[
+                  'font-bold',
+                  entry.isPill ? '' : (isCategory ? 'text-4xl' : ((entry.type === 'REMAINING' || entry.type === 'QUOTA') ? 'text-3xl' : 'text-2xl')),
+                  entry.isPill ? '' : ((entry.type === 'REMAINING' || entry.type === 'QUOTA') ? 'text-primary' : 'text-main')
+                ]">{{ entry.value }}</div>
+                <div v-if="entry.unit" class="text-sm text-main">{{ entry.unit }}</div>
+              </div>
+            </div>
+          </div>
+        `,
+      };
+
+      /** 對應 index.html 的 resolveReqTotalText：列出有門檻的學分與門數（如「15 學分、5 門」）。 */
+      const requirementTotalTextOf = (stats) =>
+        [
+          ["CREDIT", LABELS.requirementUnits.CREDIT],
+          ["COURSE", LABELS.requirementUnits.COURSE],
+        ]
+          .flatMap(([metric, unit]) => {
+            const stat = stats.find((item) => item.metric === metric);
+            return stat && stat.min > 0 ? [`${stat.min} ${unit}`] : [];
+          })
+          .join("、");
+
+      /** 對應 index.html 的 AbstractListItem：學期｜徽章＋課名｜成績｜學分，註記另起一列。 */
+      const CourseRow = {
+        props: ["data", "hasBorder"],
+        setup(props) {
+          const semesterLabel = computed(() => `${props.data.academicYear}-${props.data.semester}`);
+          const gradeLabel = computed(() =>
+            props.data.scoreStatus === "NORMAL"
+              ? props.data.score.toFixed(2)
+              : LABELS.scoreStatus[props.data.scoreStatus],
+          );
+          const isDimmed = computed(() => props.data.scoreStatus !== "NORMAL");
+          const noteLabel = computed(() => (props.data.note ? LABELS.notes[props.data.note] : ""));
+          return { semesterLabel, gradeLabel, isDimmed, noteLabel };
+        },
+        template: `
+          <div class="relative px-4 py-3 grid grid-cols-[3.5rem_1fr_4rem_2rem] gap-x-2 gap-y-1 items-center text-sm">
+            <div class="whitespace-nowrap font-medium text-main">{{ semesterLabel }}</div>
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="font-medium line-clamp-2 break-all text-main">{{ data.name }}</span>
+            </div>
+            <div class="text-right font-medium whitespace-nowrap" :class="isDimmed ? 'text-sub' : 'text-main'">{{ gradeLabel }}</div>
+            <div class="text-right font-medium" :class="isDimmed ? 'text-sub' : 'text-main'">{{ data.credit.toFixed(1) }}</div>
+            <div v-if="noteLabel" class="col-span-4 text-xs text-sub whitespace-pre-wrap">＊{{ noteLabel }}</div>
+            <div v-if="hasBorder" class="absolute bottom-0 left-4 right-4 border-b border-gray-200"></div>
+          </div>
+        `,
+      };
+
+      /** 對應 index.html 的 InfoStatusRow：應修總數或群組訊息，文字列（text-xs 粗體主色）。 */
+      const InfoRow = {
+        props: ["hasBorder"],
+        template: `
+          <div class="relative px-4 py-3 text-xs font-bold text-primary">
+            <slot></slot>
+            <div v-if="hasBorder" class="absolute bottom-0 left-4 right-4 border-b border-gray-200"></div>
+          </div>
+        `,
+      };
+
+      /**
+       * 對應 index.html 的 AccordionCard 外框：表頭（標題＋統計）、可收合的內容、頁尾（修習狀態＋箭頭）。
+       * 內容由 slot 提供，目前與提案的群組卡共用同一個外框。
+       */
+      const AccordionShell = {
+        props: ["group", "initiallyOpen", "isExpandable"],
+        components: { ProgressStats },
+        setup(props) {
+          const isOpen = ref(props.initiallyOpen && props.isExpandable);
+          const toggle = () => {
+            isOpen.value = props.isExpandable && !isOpen.value;
+          };
+          const footerLabel = computed(() => {
+            if (props.group.stats.every((stat) => LABELS.isMet(stat))) return LABELS.requirement.FOOTER_COMPLETED;
+            if (props.group.records.length > 0) {
+              return `${LABELS.requirement.FOOTER_STUDIED_PREFIX}${props.group.records.length}${LABELS.requirement.FOOTER_STUDIED_SUFFIX}`;
+            }
+            return LABELS.requirement.NO_COURSE_GENERIC;
+          });
+          return { isOpen, toggle, footerLabel };
+        },
+        template: `
+          <div class="accordion-container">
+            <button type="button" @click="toggle" :disabled="!isExpandable" :aria-expanded="isOpen" :class="['p-4 flex justify-between items-end w-full text-left shadow-layer-header', isExpandable ? 'cursor-pointer' : 'cursor-default']">
+              <span class="font-bold text-lg text-main">{{ group.label }}</span>
+              <progress-stats :stats="group.stats" scope="group"></progress-stats>
+            </button>
+            <div v-if="isOpen" class="shadow-layer-body">
+              <slot></slot>
+            </div>
+            <button type="button" @click="toggle" :disabled="!isExpandable" :aria-expanded="isOpen" :class="['p-3 w-full flex justify-between items-center text-xs shadow-layer-footer text-sub', isOpen ? 'shadow-layer-footer-open' : '', isExpandable ? 'cursor-pointer' : 'cursor-default']">
+              <span class="font-medium text-sub">{{ footerLabel }}</span>
+              <svg v-if="isExpandable" :class="['w-4 h-4 text-sub transition-transform duration-300', isOpen ? 'rotate-180' : '']" aria-hidden="true"><use href="#chevron"></use></svg>
+            </button>
+          </div>
+        `,
+      };
+
+      /**
+       * 目前的群組卡（對應 index.html AccordionCard 的內容）：應修總數列、群組訊息、課程列。
+       * 與 demo 相同，只有課程或群組訊息時可展開。
+       */
+      const CurrentGroupCard = {
+        props: ["group", "initiallyOpen"],
+        components: { AccordionShell, InfoRow, CourseRow },
+        setup(props) {
+          const totalText = computed(() => requirementTotalTextOf(props.group.stats));
+          const isExpandable = computed(() => props.group.records.length > 0 || Boolean(props.group.message));
+          return { totalText, isExpandable, LABELS };
+        },
+        template: `
+          <accordion-shell :group="group" :initially-open="initiallyOpen" :is-expandable="isExpandable">
+            <info-row :has-border="Boolean(group.message) || group.records.length > 0">
+              <span class="text-primary">{{ LABELS.requirement.TOTAL_REQUIRED }} ： {{ totalText }}</span>
+              <span v-if="group.description" class="text-main font-normal">（{{ group.description }}）</span>
+            </info-row>
+            <info-row v-if="group.message" :has-border="group.records.length > 0">
+              <p class="text-sm text-primary">{{ LABELS.messages[group.message] }}</p>
+            </info-row>
+            <course-row v-for="(record, idx) in group.records" :key="idx" :data="record" :has-border="idx < group.records.length - 1"></course-row>
+          </accordion-shell>
+        `,
+      };
+
+      /** 目前的檢查點（對應 index.html FooterInfo）：只有標題與統計，description 不顯示。 */
+      const CurrentCheckpoint = {
+        props: ["group"],
+        components: { ProgressStats },
+        template: `
+          <div class="flex justify-between items-center pt-0 pb-3 px-4">
+            <div class="flex items-center gap-2 font-bold"><span class="text-lg text-main">{{ group.label }}</span></div>
+            <div class="flex flex-col items-end">
+              <progress-stats :stats="group.stats" scope="group" :is-checkpoint="true"></progress-stats>
+            </div>
+          </div>
+        `,
+      };
+
+      /**
+       * 提案的群組卡：外框、應修總數列與課程列與目前相同；有子群時多一列各軌狀態膠囊
+       * （達成＝demo「已修完」的實心膠囊，未達成＝空心淡色），課程依所屬的軌分列。
+       * 影子（擇一採計後未採計的軌）照 demo 的課程列呈現，以 COUNTED_IN_OTHER_ITEM 註記說明。
+       * 沒有子群時與目前的群組卡相同。
+       */
+      const ProposedGroupCard = {
+        props: {
+          group: Object,
+          subgroups: { type: Array, default: () => [] },
+          initiallyOpen: Boolean,
+        },
+        components: { AccordionShell, InfoRow, CourseRow, CurrentGroupCard },
+        setup(props) {
+          const totalText = computed(() => requirementTotalTextOf(props.group.stats));
+          const tracks = computed(() =>
+            props.subgroups.map((subgroup) => ({ ...subgroup, met: LABELS.isMet(subgroup.stats[0]) })),
+          );
+          return { totalText, tracks, LABELS };
+        },
+        template: `
+          <current-group-card v-if="tracks.length === 0" :group="group" :initially-open="initiallyOpen"></current-group-card>
+          <accordion-shell v-else :group="group" :initially-open="initiallyOpen" :is-expandable="true">
+            <info-row :has-border="true">
+              <span class="text-primary">{{ LABELS.requirement.TOTAL_REQUIRED }} ： {{ totalText }}</span>
+              <span v-if="group.description" class="text-main font-normal">（{{ group.description }}）</span>
+            </info-row>
+            <info-row :has-border="true">
+              <div class="flex flex-wrap gap-2 text-xs" role="list" aria-label="各軌達成狀態">
+                <span v-for="track in tracks" :key="track.code" role="listitem" :class="['px-3 py-1 rounded-full', track.met ? 'bg-main shadow-sm text-inverse-main' : 'border-2 border-gray-300 text-sub']">{{ track.label }}</span>
+              </div>
+            </info-row>
+            <template v-for="(track, trackIdx) in tracks" :key="track.code">
+              <info-row :has-border="false">
+                <span :class="track.met ? 'text-primary' : 'text-sub'">{{ track.label }}</span>
+              </info-row>
+              <div v-if="track.records.length === 0" class="relative px-4 pb-3 text-sm text-sub">
+                {{ LABELS.requirement.NO_COURSE_GENERIC }}
+                <div v-if="trackIdx < tracks.length - 1" class="absolute bottom-0 left-4 right-4 border-b border-gray-200"></div>
+              </div>
+              <course-row v-for="(record, idx) in track.records" :key="idx" :data="record" :has-border="idx < track.records.length - 1 || trackIdx < tracks.length - 1"></course-row>
+            </template>
+          </accordion-shell>
+        `,
+      };
+
+      /**
+       * 提案的檢查點：表頭列與 demo FooterInfo 相同（標題＋檢查點統計），其下以 demo 的平鋪清單外框列出組成項目。
+       * 每列右側交給 ProgressStats 依資料顯示：須各自達成的項目為「已修完」膠囊或「剩餘 N」，
+       * min 為 null 的貢獻量為「共計 N」；第二層組成項目並列於同一列。有貢獻量時另列合計（共計／剩餘）。條文可收合。
+       */
+      const ProposedCheckpoint = {
+        props: ["group"],
+        components: { ProgressStats, InfoRow },
+        setup(props) {
+          const hasContributions = computed(() =>
+            props.group.components.some((component) => component.stats[0].min === null),
+          );
+          return { hasContributions };
+        },
+        template: `
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center pt-0 pb-1 px-4">
+              <div class="flex items-center gap-2 font-bold"><span class="text-lg text-main">{{ group.label }}</span></div>
+              <progress-stats :stats="group.stats" scope="group" :is-checkpoint="true"></progress-stats>
+            </div>
+            <div class="shadow-layer-single overflow-hidden">
+              <div v-for="component in group.components" :key="component.code" class="relative px-4 py-3 flex justify-between items-center gap-4 text-sm">
+                <span class="font-medium text-main">{{ component.label }}</span>
+                <div v-if="component.components" class="flex items-center gap-5">
+                  <div v-for="part in component.components" :key="part.code" class="flex items-center gap-2">
+                    <span class="text-xs text-sub">{{ part.label }}</span>
+                    <progress-stats :stats="part.stats" scope="group" :is-checkpoint="true"></progress-stats>
+                  </div>
+                </div>
+                <progress-stats v-else :stats="component.stats" scope="group" :is-checkpoint="true"></progress-stats>
+                <div class="absolute bottom-0 left-4 right-4 border-b border-gray-200"></div>
+              </div>
+              <div v-if="hasContributions" class="relative px-4 py-3 flex justify-between items-center gap-4 text-sm">
+                <span class="font-bold text-main">合計</span>
+                <progress-stats :stats="group.stats" scope="group"></progress-stats>
+                <div class="absolute bottom-0 left-4 right-4 border-b border-gray-200"></div>
+              </div>
+              <info-row :has-border="false">
+                <details>
+                  <summary class="cursor-pointer">條文</summary>
+                  <p class="mt-2 text-main font-normal leading-relaxed">{{ group.description }}</p>
+                </details>
+              </info-row>
+            </div>
+          </div>
+        `,
+      };
+
+      /**
+       * 條件節點的達成狀態與組合方式文字（條件樹、矩陣、下一步建議共用）。
+       * 狀態只看節點自身第一個統計項；min 為 null 的節點是合計中的貢獻量，沒有達成與否。
+       */
+      const CONDITION = Object.freeze({
+        stateOf: (stat) => {
+          if (stat.min === null) return "CONTRIBUTION";
+          if (stat.actual >= stat.min) return "MET";
+          return stat.actual > 0 ? "PARTIAL" : "UNMET";
+        },
+        stateText: { MET: "已達成", PARTIAL: "部分達成", UNMET: "未達成" },
+        combinatorTextOf: (node) =>
+          ({ ALL: "全部達成", ANY: `任 ${node.stats[0].min} 項達成`, SUM: "合計" })[node.combinator] ?? "",
+        unitOf: (metric) => LABELS.requirementUnits[metric] ?? "項",
+        ratioOf: (stat) => Math.min(stat.actual / stat.min, 1),
+        /** 兩層組成項目中達成比例加總最高的一列（並列取先出現者），只作顯示上的提示。 */
+        closestOf: (rows) => {
+          const scoreOf = (row) => row.components.reduce((total, part) => total + CONDITION.ratioOf(part.stats[0]), 0);
+          return rows.reduce((best, row) => (scoreOf(row) > scoreOf(best) ? row : best));
+        },
+      });
+
+      /** 狀態點：實心＝已達成、半實心＝部分達成、空心＝未達成（只用 demo 的主文字色與淡灰）。 */
+      const StateDot = {
+        props: ["state"],
+        setup() {
+          return { CONDITION };
+        },
+        template: `
+          <span
+            v-if="state !== 'CONTRIBUTION'"
+            role="img"
+            :aria-label="CONDITION.stateText[state]"
+            :class="['inline-block w-3 h-3 rounded-full shrink-0 border-2', state === 'UNMET' ? 'border-gray-300' : 'border-main', state === 'MET' ? 'bg-main' : '']"
+            :style="state === 'PARTIAL' ? 'background: linear-gradient(90deg, var(--c-text-main) 50%, transparent 50%)' : ''"
+          ></span>
+        `,
+      };
+
+      /**
+       * 疊色進度條（合計型節點）：凹陷長條內依序填入各組成項目的貢獻（主色由深到淺），門檻處畫刻度。
+       * 長條的比例尺取門檻與實得較大者，超過門檻時刻度落在長條內。
+       */
+      const StackedBar = {
+        props: ["node"],
+        setup(props) {
+          const SHADES = [1, 0.65, 0.4, 0.2];
+          const total = computed(() => props.node.stats[0]);
+          const scale = computed(() => Math.max(total.value.min, total.value.actual, 1));
+          const segments = computed(() =>
+            props.node.components.map((component, idx) => ({
+              code: component.code,
+              label: component.label,
+              actual: component.stats[0].actual,
+              width: `${(component.stats[0].actual / scale.value) * 100}%`,
+              opacity: SHADES[idx % SHADES.length],
+            })),
+          );
+          const tickLeft = computed(() => `calc(${(total.value.min / scale.value) * 100}% - 2px)`);
+          const unit = computed(() => CONDITION.unitOf(total.value.metric));
+          return { total, segments, tickLeft, unit };
+        },
+        template: `
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-end text-xs text-sub">{{ total.actual }}／{{ total.min }} {{ unit }}</div>
+            <div class="relative h-3 rounded-full shadow-layer-single overflow-hidden" role="img" :aria-label="segments.map((s) => s.label + ' ' + s.actual).join('、')">
+              <div class="absolute inset-0 flex">
+                <div v-for="segment in segments" :key="segment.code" class="h-full bg-primary" :style="{ width: segment.width, opacity: segment.opacity }"></div>
+              </div>
+              <div class="absolute top-0 bottom-0 w-0.5 bg-main" :style="{ left: tickLeft }"></div>
+            </div>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-main">
+              <span v-for="segment in segments" :key="segment.code" class="flex items-center gap-1">
+                <span class="inline-block w-2.5 h-2.5 rounded-sm bg-primary" :style="{ opacity: segment.opacity }"></span>
+                {{ segment.label }} {{ segment.actual }}
+              </span>
+            </div>
+          </div>
+        `,
+      };
+
+      /**
+       * 矩陣（兩層組成項目，如專業認定：軌 × 群組）：每格為凹陷小長條，依達成比例填色並標示「實得／門檻」。
+       * 各列以達成比例加總排序出最接近者（並列取先出現者），只作顯示上的提示。
+       */
+      const ConditionMatrix = {
+        props: ["node"],
+        components: { StateDot },
+        setup(props) {
+          const columns = computed(() => props.node.components[0].components.map((part) => part.label));
+          const rows = computed(() =>
+            props.node.components.map((component) => ({
+              code: component.code,
+              label: component.label,
+              state: CONDITION.stateOf(component.stats[0]),
+              cells: component.components.map((part) => ({
+                code: part.code,
+                state: CONDITION.stateOf(part.stats[0]),
+                width: `${CONDITION.ratioOf(part.stats[0]) * 100}%`,
+                text: `${part.stats[0].actual}／${part.stats[0].min} ${CONDITION.unitOf(part.stats[0].metric)}`,
+              })),
+            })),
+          );
+          const closestCode = computed(() => CONDITION.closestOf(props.node.components).code);
+          return { columns, rows, closestCode };
+        },
+        template: `
+          <div class="grid gap-x-4 gap-y-2 items-center text-xs" :style="{ gridTemplateColumns: 'auto repeat(' + columns.length + ', minmax(0, 1fr))' }" role="table">
+            <span role="columnheader"></span>
+            <span v-for="column in columns" :key="column" role="columnheader" class="text-sub font-medium">{{ column }}</span>
+            <template v-for="row in rows" :key="row.code">
+              <span role="rowheader" :class="['flex items-center gap-2 text-sm', row.code === closestCode ? 'font-bold text-main' : 'text-main']">
+                <state-dot :state="row.state"></state-dot>{{ row.label }}<span v-if="row.code === closestCode" class="text-xs text-primary font-bold">最接近</span>
+              </span>
+              <div v-for="cell in row.cells" :key="cell.code" role="cell" class="flex flex-col gap-1">
+                <div class="relative h-2 rounded-full shadow-layer-single overflow-hidden">
+                  <div class="absolute inset-y-0 left-0 bg-primary" :style="{ width: cell.width }"></div>
+                </div>
+                <span :class="cell.state === 'MET' ? 'text-main font-bold' : 'text-sub'">{{ cell.text }}</span>
+              </div>
+            </template>
+          </div>
+        `,
+      };
+
+      /**
+       * 條件樹節點（遞迴）：狀態點＋名稱＋組合方式＋統計（沿用 demo 的 ProgressStats）。
+       * 子節點的畫法依資料：SUM 為疊色進度條、組成項目再有組成項目者為矩陣、其餘為縮排的子節點清單。
+       */
+      const ConditionNode = {
+        name: "ConditionNode",
+        props: ["node"],
+        components: { StateDot, ProgressStats, StackedBar, ConditionMatrix },
+        setup(props) {
+          const children = computed(() => props.node.components ?? []);
+          const layout = computed(() => {
+            if (children.value.length === 0) return "LEAF";
+            if (props.node.combinator === "SUM") return "BAR";
+            return children.value.every((child) => child.components) ? "MATRIX" : "LIST";
+          });
+          const state = computed(() => CONDITION.stateOf(props.node.stats[0]));
+          const combinatorText = computed(() => CONDITION.combinatorTextOf(props.node));
+          return { children, layout, state, combinatorText };
+        },
+        template: `
+          <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center gap-4">
+              <div class="flex items-center gap-2 min-w-0">
+                <state-dot :state="state"></state-dot>
+                <span class="font-bold text-main">{{ node.label }}</span>
+                <span v-if="combinatorText" class="text-xs text-sub whitespace-nowrap">{{ combinatorText }}</span>
+              </div>
+              <progress-stats :stats="node.stats" scope="group" :is-checkpoint="layout !== 'LEAF'"></progress-stats>
+            </div>
+            <div v-if="layout !== 'LEAF'" class="ml-1.5 pl-4 border-l-2 border-gray-200 flex flex-col gap-3">
+              <stacked-bar v-if="layout === 'BAR'" :node="node"></stacked-bar>
+              <condition-matrix v-else-if="layout === 'MATRIX'" :node="node"></condition-matrix>
+              <condition-node v-else v-for="child in children" :key="child.code" :node="child"></condition-node>
+            </div>
+          </div>
+        `,
+      };
+
+      /** 條件樹：根節點為分類（各群組與附加條件全部達成），子節點為群組與檢查點，放在 demo 的平鋪清單外框內。 */
+      const ConditionTree = {
+        props: ["title", "stats", "groups", "checkpoints"],
+        components: { ConditionNode },
+        setup(props) {
+          const root = computed(() => ({
+            code: "root",
+            label: props.title,
+            combinator: "ALL",
+            stats: props.stats,
+            components: [
+              ...props.groups.map((group) => ({ code: group.code, label: group.label, stats: group.stats })),
+              ...props.checkpoints,
+            ],
+          }));
+          return { root };
+        },
+        template: `
+          <div class="shadow-layer-single p-4">
+            <condition-node :node="root"></condition-node>
+          </div>
+        `,
+      };
+
+      /**
+       * 下一步建議（簡化示意）：逐項列出未達成條件的最小缺口——群組與合計取剩餘，任 M 取剩餘最少的 M 項，
+       * 矩陣取最接近的一列。各項分開計算，未考慮一門課同時滿足多項條件；最少補修組合須由後端計算。
+       */
+      const NextStepCard = {
+        props: ["groups", "checkpoints"],
+        components: { InfoRow },
+        setup(props) {
+          const remainOf = (stat) => `${stat.remain} ${CONDITION.unitOf(stat.metric)}`;
+          const unmetFirst = (stats) => stats.find((stat) => stat.remain > 0);
+          const groupSteps = () =>
+            props.groups.flatMap((group) => {
+              const stat = unmetFirst(group.stats);
+              return stat ? [`${group.label} 再 ${remainOf(stat)}`] : [];
+            });
+          const anySteps = (checkpoint) => {
+            const needed = checkpoint.stats[0].remain;
+            const picks = checkpoint.components
+              .filter((component) => CONDITION.stateOf(component.stats[0]) !== "MET")
+              .sort((a, b) => a.stats[0].remain - b.stats[0].remain)
+              .slice(0, needed)
+              .map((component) => `${component.label} 再 ${remainOf(component.stats[0])}`);
+            return [`${checkpoint.label}：${picks.join("；")}`];
+          };
+          const matrixSteps = (checkpoint) => {
+            const closest = CONDITION.closestOf(checkpoint.components);
+            const parts = closest.components
+              .filter((part) => part.stats[0].remain > 0)
+              .map((part) => `${part.label} 再 ${remainOf(part.stats[0])}`);
+            return [`${checkpoint.label}：${closest.label} ${parts.join("、")}`];
+          };
+          const checkpointSteps = (checkpoint) => {
+            if (checkpoint.stats[0].remain <= 0) return [];
+            if (checkpoint.combinator === "SUM") return [`${checkpoint.label} 再 ${remainOf(checkpoint.stats[0])}`];
+            return checkpoint.components.every((component) => component.components)
+              ? matrixSteps(checkpoint)
+              : anySteps(checkpoint);
+          };
+          const steps = computed(() => [...groupSteps(), ...props.checkpoints.flatMap(checkpointSteps)]);
+          return { steps };
+        },
+        template: `
+          <div class="shadow-layer-single overflow-hidden">
+            <info-row :has-border="true">下一步（簡化示意）</info-row>
+            <ol class="px-4 py-3 flex flex-col gap-2 text-sm text-main list-decimal list-inside">
+              <li v-for="step in steps" :key="step">{{ step }}</li>
+              <li v-if="steps.length === 0" class="list-none text-sub">群修條件皆已達成</li>
+            </ol>
+            <p class="px-4 pb-3 text-xs text-sub">＊各項分開計算，未考慮一門課同時滿足多項條件；最少補修組合須由後端計算。</p>
+          </div>
+        `,
+      };
+
+      /** 對應 index.html 的 CategoryHeader：分類圖示、小標（身分：系所）、分類名稱與分類統計。 */
+      const CategoryHeader = {
+        props: ["subtitle", "title", "stats"],
+        components: { ProgressStats },
+        template: `
+          <div class="flex justify-between items-center w-full p-4">
+            <div class="flex gap-5 min-w-0 flex-1 pr-2">
+              <div class="w-12 h-12 flex items-center justify-center text-primary">
+                <svg class="w-10 h-10" aria-hidden="true"><use href="#cluster"></use></svg>
+              </div>
+              <div class="flex flex-col justify-center min-w-0">
+                <div class="text-xs font-medium mb-0.5 text-sub truncate">{{ subtitle }}</div>
+                <div class="text-lg font-bold leading-none text-main">{{ title }}</div>
+              </div>
+            </div>
+            <progress-stats :stats="stats" scope="category"></progress-stats>
+          </div>
+        `,
+      };
+
+      /**
+       * 情境分頁（網址 hash 記住所選情境）× 呈現方式（?view=tree 為條件樹）× 左右並排（目前／提案）。
+       * ?expanded 時群組卡預設展開；檢查點依 demo 雙欄版面的位置放在群組卡上方。
+       */
+      const VIEWS = Object.freeze([
+        { id: "cards", title: "群組卡＋檢查點", note: "沿用 demo 版面，子群分列、組成項目逐列" },
+        { id: "tree", title: "條件樹", note: "下一步建議＋條件樹（合計為疊色進度條、專業認定為矩陣）" },
+      ]);
+
+      const App = {
+        components: { CategoryHeader, CurrentGroupCard, CurrentCheckpoint, ProposedGroupCard, ProposedCheckpoint, ConditionTree, NextStepCard },
+        setup() {
+          const params = new URLSearchParams(window.location.search);
+          const initial = SCENARIOS.find((scenario) => `#${scenario.id}` === window.location.hash) ?? SCENARIOS[0];
+          const isExpanded = params.has("expanded");
+          const selected = ref(initial.id);
+          const view = ref(VIEWS.find((item) => item.id === params.get("view"))?.id ?? VIEWS[0].id);
+          const syncUrl = () => {
+            params.set("view", view.value);
+            history.replaceState(null, "", `?${params}#${selected.value}`);
+          };
+          const select = (id) => {
+            selected.value = id;
+            syncUrl();
+          };
+          const selectView = (id) => {
+            view.value = id;
+            syncUrl();
+          };
+          const scenario = computed(() => SCENARIOS.find((item) => item.id === selected.value));
+          const current = computed(() => CURRENT_RESPONSES[selected.value]);
+          const proposed = computed(() => PROPOSED_RESPONSES[selected.value]);
+          return { SCENARIOS, VIEWS, LABELS, isExpanded, selected, select, view, selectView, scenario, current, proposed };
+        },
+        template: `
+          <main class="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-6">
+            <header class="flex flex-col gap-3">
+              <h1 class="text-2xl font-bold text-main">子群型與合計型條件呈現預覽</h1>
+              <p class="text-sm text-sub">左側為目前 demo 畫面讀取的回應；右側為規劃中的 subgroups／components 形狀與分類統計（手寫範例）。</p>
+              <nav class="flex flex-wrap gap-2" role="tablist" aria-label="情境">
+                <button v-for="item in SCENARIOS" :key="item.id" type="button" role="tab" :aria-selected="selected === item.id" @click="select(item.id)" :class="['px-4 py-2 rounded-xl text-sm text-left', selected === item.id ? 'neumorphism-btn-active' : 'text-sub']">
+                  <span class="block">{{ item.title }}</span>
+                  <span class="block text-xs">{{ item.kind }}</span>
+                </button>
+              </nav>
+              <nav class="flex flex-wrap gap-2" role="tablist" aria-label="呈現方式">
+                <button v-for="item in VIEWS" :key="item.id" type="button" role="tab" :aria-selected="view === item.id" @click="selectView(item.id)" :class="['px-4 py-2 rounded-xl text-sm text-left', view === item.id ? 'neumorphism-btn-active' : 'text-sub']">
+                  <span class="block">{{ item.title }}</span>
+                  <span class="block text-xs">{{ item.note }}</span>
+                </button>
+              </nav>
+            </header>
+            <div class="grid gap-6 md:grid-cols-2">
+              <section class="flex flex-col gap-4" aria-label="目前">
+                <h2 class="text-xs font-medium text-sub px-1">目前</h2>
+                <div class="neumorphism-card">
+                  <category-header :subtitle="scenario.subtitle" :title="LABELS.categories.PARTIALLY_REQUIRED" :stats="current.stats"></category-header>
+                </div>
+                <div class="neumorphism-card p-4 flex flex-col gap-4">
+                  <current-checkpoint v-for="group in current.checkpoints" :key="group.code" :group="group"></current-checkpoint>
+                  <current-group-card v-for="group in current.requirements" :key="group.code" :group="group" :initially-open="isExpanded"></current-group-card>
+                </div>
+              </section>
+              <section class="flex flex-col gap-4" aria-label="提案">
+                <h2 class="text-xs font-medium text-sub px-1">提案</h2>
+                <div class="neumorphism-card">
+                  <category-header :subtitle="scenario.subtitle" :title="LABELS.categories.PARTIALLY_REQUIRED" :stats="proposed.stats"></category-header>
+                </div>
+                <div v-if="view === 'cards'" class="neumorphism-card p-4 flex flex-col gap-4">
+                  <proposed-checkpoint v-for="group in proposed.checkpoints" :key="group.code" :group="group"></proposed-checkpoint>
+                  <proposed-group-card v-for="group in current.requirements" :key="group.code" :group="group" :subgroups="proposed.subgroupsByGroup[group.code]" :initially-open="isExpanded"></proposed-group-card>
+                </div>
+                <div v-else class="neumorphism-card p-4 flex flex-col gap-4">
+                  <next-step-card :groups="current.requirements" :checkpoints="proposed.checkpoints"></next-step-card>
+                  <condition-tree :title="LABELS.categories.PARTIALLY_REQUIRED" :stats="proposed.stats" :groups="current.requirements" :checkpoints="proposed.checkpoints"></condition-tree>
+                </div>
+              </section>
+            </div>
+          </main>
+        `,
+      };
+
+      createApp(App).mount("#app");
+    </script>
+  </body>
+</html>
